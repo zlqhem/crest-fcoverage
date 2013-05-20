@@ -13,7 +13,9 @@ build
   `runhaskell Setup build`             
 
 install
-  runhaskell Setup install       
+  
+  `runhaskell Setup install`
 
 run 
-  crest-fcoverage                
+
+  `crest-fcoverage`                
