@@ -1,9 +1,9 @@
 module Fcoverage(run) where 
 
-import Data.List (mapAccumL, intersect, intercalate)
+import Data.List (intersect, intercalate)
 import System.IO
 import Control.Monad (liftM, foldM, join)
-import Control.Applicative ((<$>), (<*>))
+import Control.Applicative ((<$>))
 import Text.Printf as TP
 
 type Branches = [Int]
@@ -12,7 +12,7 @@ type Line = Int
 type File = String
 data Function = Function Fid String File Line deriving (Show, Eq)
 
--- funcount File -> [Function]
+-- funid File -> [Function]
 -- formatted_str = "<function_name>@<file>:<line>
 mkFunction :: String -> Maybe Function
 mkFunction str = 
@@ -70,17 +70,4 @@ run = do
   let result = liftM (map (fid2name functions)) fcovg
   return (strip result) >>= putStrLn . 
                           (intercalate "\n") . (map formatCovg)
-{--
-main = do
-  c <- readFile "coverage"
-  let covered = map (read::String -> Int) $ lines c
-  r <- readFile "funcount" 
-  let fs = map mkFunction (lines r) :: [Maybe Function]
-  let functions = map (\(Just f) -> f) $ filter (/= Nothing) fs
-  b <- readFile "branches"
-  let Just allFuncBranches = parseBranches b
-  let fcovg = map (\(fid, br) -> (fid, coverage br covered)) <$> parseBranches b 
-  let result = liftM (map (fid2name functions)) fcovg
-  return (strip result) >>= putStrLn . 
-                          (intercalate "\n") . (map formatCovg)
---} 
+
