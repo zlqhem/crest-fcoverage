@@ -19,7 +19,7 @@ run = do
     b <- readFile "branches"
     c <- readFile "coverage"
     let fromFunid = sequence . (map readFunction) . lines $ f
-    let fromBranch = readBranches b
+    let fromBranch = return $ readBranches b
     let fromCoverage = sequence . (map maybeInt) . lines $ c
     let coverages = join $ calcFuncCovg <$> fromFunid <*> fromBranch <*> fromCoverage 
     case (intercalate "\n") . map toString <$> coverages of
@@ -35,19 +35,11 @@ readFunction str =
     otherwise -> Nothing
     where delim2space str = [if c == '@' || c == ':' then ' '  else c | c <- str]
     
-readBranches ::  String -> Maybe [(Int, [Int])]
-readBranches contents = 
-  let r = foldM (\acc (x:y:xs) -> if xs /= [] then Nothing else
-        case acc of        
-          []                -> Just ([(y, x, [])])
-          (0, _, _):xs      -> Just ((y, x, []):acc)
-          (cnt, fid, br):xs -> Just ((cnt - 1, fid, x:y:br):xs))
-        []
-        (nestedIntList $ contents) in
-  case r of
-    Just ((0, _, _):xs) -> fmap (map (\(cnt, fid, br) -> (fid, br))) r
-    otherwise -> Nothing
-    where nestedIntList = map ((map int) . words) . lines
+readBranches ::  String -> [(Int, [Int])]
+readBranches contents =
+  split . (map read) . words $ contents 
+  where split [] = []
+        split (fid:cnt:rest) = (fid, take (cnt * 2) rest) : split (drop (cnt*2) rest) 
 
 float :: (Int, Int) -> Float
 float (x, y) = fromIntegral x / fromIntegral y
