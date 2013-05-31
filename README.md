@@ -1,7 +1,7 @@
 crest-fcoverage
 ===============
 
-Build Status: [![Build Status](https://secure.travis-ci.org/zlqhem/crest-fcoverage.png)](https://secure.travis-ci.org/zlqhem/crest-fcoverage.png)
+Build Status: [![Build Status](https://secure.travis-ci.org/zlqhem/crest-fcoverage.png)](https://travis-ci.org/zlqhem/crest-fcoverage)
 
 prints branch coverage for each function from crest's coverage file
 
