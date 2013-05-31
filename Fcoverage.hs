@@ -25,7 +25,7 @@ run = do
 calc :: String -> String -> String -> Maybe String
 calc f b c =  do 
     fromFunid <- sequence . (map readFunction) . lines $ f
-    fromBranch <- readBranches b
+    let fromBranch = readBranches b
     fromCoverage <- sequence . (map maybeInt) . lines $ c
     return $ unlines . map toString $ calcFuncCovg fromFunid fromBranch fromCoverage 
 
@@ -36,19 +36,11 @@ readFunction str =
     otherwise -> Nothing
     where delim2space str = [if c == '@' || c == ':' then ' '  else c | c <- str]
     
-readBranches ::  String -> Maybe [(Fid, [Branch])]
-readBranches contents = 
-  let r = foldM (\acc (x:y:xs) -> if xs /= [] then Nothing else
-        case acc of        
-          []                -> Just ([(y, x, [])])
-          (0, _, _):xs      -> Just ((y, x, []):acc)
-          (cnt, fid, br):xs -> Just ((cnt - 1, fid, x:y:br):xs))
-        []
-        (nestedIntList $ contents) in
-  case r of
-    Just ((0, _, _):xs) -> fmap (map (\(cnt, fid, br) -> (fid, br))) r
-    otherwise -> Nothing
-    where nestedIntList = map ((map int) . words) . lines
+readBranches ::  String -> [(Fid, [Branch])]
+readBranches contents =
+  split . (map read) . words $ contents 
+  where split [] = []
+        split (fid:cnt:rest) = (fid, take (cnt * 2) rest) : split (drop (cnt*2) rest) 
 
 int = read :: String -> Int
 
