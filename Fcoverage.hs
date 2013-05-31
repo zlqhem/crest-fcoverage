@@ -40,7 +40,8 @@ readBranches ::  String -> [(Fid, [Branch])]
 readBranches contents =
   split . (map read) . words $ contents 
   where split [] = []
-        split (fid:cnt:rest) = (fid, take (cnt * 2) rest) : split (drop (cnt*2) rest) 
+        split (fid:cnt:rest) = (fid, branches) : split others 
+          where (branches, others) = splitAt (cnt * 2) rest
 
 int = read :: String -> Int
 
