@@ -8,19 +8,19 @@ prints branch coverage for each function from crest's coverage file
 ## Usage
 configure for installation at user home
 
-  `runhaskell Setup configure --user`
+  `cabal configure --enable-tests --user`
 
 build
 
-  `runhaskell Setup build`             
+  `cabal build`             
 
 test
 
-   `runhaskell Setup test` 
+  `cabal test` 
 
 install
   
-  `runhaskell Setup install`
+  `cabal install`
 
 run 
 
